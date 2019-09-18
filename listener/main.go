@@ -1,6 +1,7 @@
 package main
 
 import (
+	multic "github.com/axamon/multicast"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/dmichael/go-multicast/multicast"
 	"github.com/urfave/cli"
+	
 )
 
 const (
@@ -19,13 +21,13 @@ const (
 
 var lastIndex = 2000
 
-type MyStruct struct {
-	Index      int       `json:"index"`
-	Aggiornato bool      `json:"aggiornato"`
-	Timestamp  time.Time `json:"timestamp"`
-}
+// type MyStruct struct {
+// 	Index      int       `json:"index"`
+// 	Aggiornato bool      `json:"aggiornato"`
+// 	Timestamp  time.Time `json:"timestamp"`
+// }
 
-var archivio = MyStruct{Index: 1000, Aggiornato: false, Timestamp: time.Now()}
+var archivio = multic.Archivio{Index: 1000, Aggiornato: false, Timestamp: time.Now()}
 
 func main() {
 
@@ -50,7 +52,7 @@ func msgHandler(src *net.UDPAddr, n int, b []byte) {
 	log.Println(n, "bytes read from", src)
 	log.Println(hex.Dump(b[:n]))
 	log.Println(string(b[:n]))
-	e := new(MyStruct)
+	e := new(multic.Archivio)
 	json.Unmarshal(b[:n], &e)
 	log.Println(e.Index)
 
